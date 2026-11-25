@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sistemastechcm@gmail.com - Portaria 5884/2026</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased">
+
+    <!-- Header Principal -->
+    <header class="bg-gradient-to-r from-amber-500 via-yellow-500 to-amber-600 text-white shadow-lg sticky top-0 z-30">
+        <div class="max-w-5xl mx-auto px-4 py-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+                <div class="flex items-center gap-3">
+                    <div class="bg-white/20 backdrop-blur-md p-2.5 rounded-xl shadow-inner text-amber-950">
+                        <i class="fa-solid font-bold fa-taxi text-2xl text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-lg sm:text-xl tracking-tight leading-tight break-all">sistemastechcm@gmail.com</h1>
+                        <p class="text-xs text-amber-100 font-medium">Portaria Nº 5.884 de 01/10/2026</p>
+                    </div>
+                </div>
+                <span class="sm:hidden bg-amber-900/30 text-amber-100 text-xs px-2.5 py-1 rounded-full font-semibold border border-amber-300/30">
+                    Confins/MG
+                </span>
+            </div>
+
+            <!-- Taxímetro Básico Informações Rápida -->
+            <div class="w-full sm:w-auto flex items-center justify-between sm:justify-end gap-2 text-xs bg-amber-950/20 backdrop-blur-sm p-2 rounded-xl border border-white/10">
+                <div class="text-center px-2 border-r border-white/20">
+                    <span class="block text-amber-200 text-[10px] uppercase font-bold">Bandeirada</span>
+                    <span class="font-extrabold text-white text-sm">R$ 5,40</span>
+                </div>
+                <div class="text-center px-2 border-r border-white/20">
+                    <span class="block text-amber-200 text-[10px] uppercase font-bold">Km Bandeira I</span>
+                    <span class="font-bold text-white text-sm">R$ 4,50</span>
+                </div>
+                <div class="text-center px-2">
+                    <span class="block text-amber-200 text-[10px] uppercase font-bold">Km Bandeira II</span>
+                    <span class="font-bold text-white text-sm">R$ 5,40</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Subheader / Barra de Pesquisa Fixa -->
+    <div class="bg-white border-b border-slate-200 shadow-sm sticky top-[73px] sm:top-[68px] z-20">
+        <div class="max-w-5xl mx-auto px-4 py-3 sm:px-6">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <i class="fa-solid fa-magnifying-glass text-slate-400 text-lg"></i>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput"
+                    placeholder="Digite o nome do destino ou bairro (ex: Pampulha, Centro, Savassi, BH)..." 
+                    class="w-full pl-11 pr-10 py-3 bg-slate-100 border border-slate-300 text-slate-800 placeholder-slate-400 text-sm sm:text-base rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white focus:border-transparent transition-all shadow-inner"
+                    autocomplete="off"
+                >
+                <button 
+                    id="clearSearch" 
+                    class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                    title="Limpar busca"
+                >
+                    <i class="fa-solid fa-circle-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Navegação de Categorias / Cidades (Scroll Horizontal) -->
+            <div id="categoryContainer" class="flex gap-2 overflow-x-auto pt-3 pb-1 custom-scrollbar text-xs font-medium whitespace-nowrap">
+                <!-- Inserido dinamicamente via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-5xl mx-auto px-4 py-5 sm:px-6 flex-grow w-full">
+
+        <!-- Status e Contador de Resultados -->
+        <div class="flex items-center justify-between mb-4">
+            <div id="resultsCount" class="text-sm font-semibold text-slate-600 flex items-center gap-2">
+                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                <span>Carregando tabela...</span>
+            </div>
+            <div id="activeFilterBadge" class="hidden text-xs bg-amber-100 text-amber-800 font-medium px-2.5 py-1 rounded-full border border-amber-200">
+                <!-- Exibe filtro ativo -->
+            </div>
+        </div>
+
+        <!-- Lista / Grid de Destinos e Tarifas -->
+        <div id="destinationsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            <!-- Cards de Destino inseridos via JS -->
+        </div>
+
+        <!-- Mensagem de NENHUM RESULTADO -->
+        <div id="noResults" class="hidden flex-col items-center justify-center py-16 text-center bg-white rounded-2xl border border-dashed border-slate-300 shadow-sm my-4">
+            <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center text-amber-500 text-2xl mb-3">
+                <i class="fa-solid fa-map-location-dot"></i>
+            </div>
+            <h3 class="text-slate-700 font-bold text-lg mb-1">Nenhum destino encontrado</h3>
+            <p class="text-slate-500 text-sm max-w-md px-4 mb-4">Não encontramos locais correspondentes à sua busca. Tente buscar por iniciais ou parte do nome da cidade/bairro.</p>
+            <button id="resetSearchBtn" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-semibold text-xs rounded-lg transition-colors shadow-sm">
+                Limpar pesquisa
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="bg-slate-900 text-slate-400 text-xs py-6 border-t border-slate-800 mt-8">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
+            <p>suporte técnico (sistemastechcm@gmail.com)</p>
+        </div>
+    </footer>
+
+    <!-- BANCO DE DADOS E LÓGICA EM JAVASCRIPT -->
+    <script>
+        // Banco de dados completo extraído do documento oficial (Portaria 5884/2026)
+        const TAXI_DATABASE = [
+            // BELO HORIZONTE
+            { id: 1, name: "Aarão Reis", category: "Belo Horizonte", price: 162.00 },
+            { id: 2, name: "Abadia", category: "Belo Horizonte", price: 199.00 },
+            { id: 3, name: "Aeroporto da Pampulha", category: "Belo Horizonte", price: 162.00 },
+            { id: 4, name: "Alípio de Melo", category: "Belo Horizonte", price: 187.00 },
+            { id: 5, name: "Alto dos Pinheiros", category: "Belo Horizonte", price: 205.00 },
+            { id: 6, name: "Alto Santa Lúcia", category: "Belo Horizonte", price: 235.00 },
+            { id: 7, name: "Alvaro Camargos", category: "Belo Horizonte", price: 205.00 },
+            { id: 8, name: "Ana Lúcia", category: "Belo Horizonte", price: 187.00 },
+            { id: 9, name: "Anchieta", category: "Belo Horizonte", price: 202.00 },
+            { id: 10, name: "Anglo American", category: "Belo Horizonte", price: 235.00 },
+            { id: 11, name: "Aparecida", category: "Belo Horizonte", price: 186.00 },
+            { id: 12, name: "Área Interna da Contorno (Centro / Savassi / Funcionários)", category: "Belo Horizonte", price: 198.00 },
+            { id: 13, name: "Bairro da Graça", category: "Belo Horizonte", price: 166.00 },
+            { id: 14, name: "Bairro das Indústrias", category: "Belo Horizonte", price: 225.00 },
+            { id: 15, name: "Bairro Industrial", category: "Belo Horizonte", price: 243.00 },
+            { id: 16, name: "Baleia", category: "Belo Horizonte", price: 225.00 },
+            { id: 17, name: "Bandeirantes da Pampulha", category: "Belo Horizonte", price: 164.00 },
+            { id: 18, name: "Barreiro Baixo", category: "Belo Horizonte", price: 242.00 },
+            { id: 19, name: "Barreiro Cima", category: "Belo Horizonte", price: 243.00 },
+            { id: 20, name: "Barroca", category: "Belo Horizonte", price: 205.00 },
+            { id: 21, name: "Bela Vista / Carlos Prates", category: "Belo Horizonte", price: 190.00 },
+            { id: 22, name: "Belmonte (Gorduras)", category: "Belo Horizonte", price: 187.00 },
+            { id: 23, name: "Belvedere Via Anel", category: "Belo Horizonte", price: 235.00 },
+            { id: 24, name: "Betânia", category: "Belo Horizonte", price: 225.00 },
+            { id: 25, name: "BH Shopping", category: "Belo Horizonte", price: 235.00 },
+            { id: 26, name: "Boa Vista", category: "Belo Horizonte", price: 187.00 },
+            { id: 27, name: "Bom Jesus", category: "Belo Horizonte", price: 186.00 },
+            { id: 28, name: "Bom Pastor", category: "Belo Horizonte", price: 213.00 },
+            { id: 29, name: "Bonfim", category: "Belo Horizonte", price: 180.00 },
+            { id: 30, name: "Bonsucesso", category: "Belo Horizonte", price: 225.00 },
+            { id: 31, name: "Braunas", category: "Belo Horizonte", price: 187.00 },
+            { id: 32, name: "Buritis", category: "Belo Horizonte", price: 230.00 },
+            { id: 33, name: "Cachoeirinha", category: "Belo Horizonte", price: 182.00 },
+            { id: 34, name: "Caetano Furquim", category: "Belo Horizonte", price: 225.00 },
+            { id: 35, name: "Caiçara", category: "Belo Horizonte", price: 190.00 },
+            { id: 36, name: "Calafate", category: "Belo Horizonte", price: 205.00 },
+            { id: 37, name: "Califórnia I", category: "Belo Horizonte", price: 205.00 },
+            { id: 38, name: "Califórnia II", category: "Belo Horizonte", price: 205.00 },
+            { id: 39, name: "Camargos", category: "Belo Horizonte", price: 225.00 },
+            { id: 40, name: "Canaã", category: "Belo Horizonte", price: 136.00 },
+            { id: 41, name: "Candelária - Venda Nova", category: "Belo Horizonte", price: 148.00 },
+            { id: 42, name: "Cardoso Barreiro", category: "Belo Horizonte", price: 243.00 },
+            { id: 43, name: "Carlos Prates", category: "Belo Horizonte", price: 190.00 },
+            { id: 44, name: "Carmo Sion", category: "Belo Horizonte", price: 202.00 },
+            { id: 45, name: "Casa Branca", category: "Belo Horizonte", price: 210.00 },
+            { id: 46, name: "Castelo", category: "Belo Horizonte", price: 188.00 },
+            { id: 47, name: "Celestino", category: "Belo Horizonte", price: 145.00 },
+            { id: 48, name: "Cemitério da Paz", category: "Belo Horizonte", price: 186.00 },
+            { id: 49, name: "Cepel", category: "Belo Horizonte", price: 187.00 },
+            { id: 50, name: "Céu Azul 1ª seção", category: "Belo Horizonte", price: 187.00 },
+            { id: 51, name: "Céu Azul 2ª seção", category: "Belo Horizonte", price: 190.00 },
+            { id: 52, name: "Cidade Administrativa", category: "Belo Horizonte", price: 115.00 },
+            { id: 53, name: "Cidade Jardim", category: "Belo Horizonte", price: 206.00 },
+            { id: 54, name: "Cidade Nova", category: "Belo Horizonte", price: 166.00 },
+            { id: 55, name: "Colégio Batista", category: "Belo Horizonte", price: 190.00 },
+            { id: 56, name: "Concórdia", category: "Belo Horizonte", price: 180.00 },
+            { id: 57, name: "Conjunto Felicidade", category: "Belo Horizonte", price: 151.00 },
+            { id: 58, name: "Conjunto Santa Maria", category: "Belo Horizonte", price: 217.00 },
+            { id: 59, name: "Copacabana", category: "Belo Horizonte", price: 151.00 },
+            { id: 60, name: "Coqueiros", category: "Belo Horizonte", price: 210.00 },
+            { id: 61, name: "Coração de Jesus", category: "Belo Horizonte", price: 206.00 },
+            { id: 62, name: "Coração Eucarístico", category: "Belo Horizonte", price: 206.00 },
+            { id: 63, name: "Cruzeiro", category: "Belo Horizonte", price: 202.00 },
+            { id: 64, name: "Diamante - Barreiro", category: "Belo Horizonte", price: 241.00 },
+            { id: 65, name: "Dom Bosco (Cicobe)", category: "Belo Horizonte", price: 206.00 },
+            { id: 66, name: "Dom Cabral (PUC)", category: "Belo Horizonte", price: 206.00 },
+            { id: 67, name: "Dom Joaquim", category: "Belo Horizonte", price: 178.00 },
+            { id: 68, name: "Dom Silvério", category: "Belo Horizonte", price: 178.00 },
+            { id: 69, name: "Dona Clara", category: "Belo Horizonte", price: 162.00 },
+            { id: 70, name: "Engenho Nogueira", category: "Belo Horizonte", price: 165.00 },
+            { id: 71, name: "Enseada das Garças", category: "Belo Horizonte", price: 187.00 },
+            { id: 72, name: "Ermelinda", category: "Belo Horizonte", price: 186.00 },
+            { id: 73, name: "Esplanada", category: "Belo Horizonte", price: 211.00 },
+            { id: 74, name: "Estoril", category: "Belo Horizonte", price: 230.00 },
+            { id: 75, name: "Estrela D'Alva", category: "Belo Horizonte", price: 230.00 },
+            { id: 76, name: "Etelvina Carneiro", category: "Belo Horizonte", price: 145.00 },
+            { id: 77, name: "Eymard", category: "Belo Horizonte", price: 166.00 },
+            { id: 78, name: "Fernão Dias", category: "Belo Horizonte", price: 166.00 },
+            { id: 79, name: "Floramar", category: "Belo Horizonte", price: 147.00 },
+            { id: 80, name: "Floresta", category: "Belo Horizonte", price: 198.00 },
+            { id: 81, name: "Gameleira", category: "Belo Horizonte", price: 213.00 },
+            { id: 82, name: "Glalijá", category: "Belo Horizonte", price: 225.00 },
+            { id: 83, name: "Glória", category: "Belo Horizonte", price: 206.00 },
+            { id: 84, name: "Goiânia", category: "Belo Horizonte", price: 187.00 },
+            { id: 85, name: "Gorduras", category: "Belo Horizonte", price: 187.00 },
+            { id: 86, name: "Grajaú", category: "Belo Horizonte", price: 206.00 },
+            { id: 87, name: "Guarani", category: "Belo Horizonte", price: 162.00 },
+            { id: 88, name: "Gutierrez", category: "Belo Horizonte", price: 206.00 },
+            { id: 89, name: "Havaí", category: "Belo Horizonte", price: 225.00 },
+            { id: 90, name: "Heliópolis", category: "Belo Horizonte", price: 156.00 },
+            { id: 91, name: "Horto", category: "Belo Horizonte", price: 187.00 },
+            { id: 92, name: "Hospital Santa Casa", category: "Belo Horizonte", price: 198.00 },
+            { id: 93, name: "Hospital São Lucas", category: "Belo Horizonte", price: 198.00 },
+            { id: 94, name: "Hotel Ouro Minas", category: "Belo Horizonte", price: 166.00 },
+            { id: 95, name: "Independência", category: "Belo Horizonte", price: 241.00 },
+            { id: 96, name: "Instituto Agronômico", category: "Belo Horizonte", price: 187.00 },
+            { id: 97, name: "Ipanema", category: "Belo Horizonte", price: 206.00 },
+            { id: 98, name: "Ipiranga", category: "Belo Horizonte", price: 166.00 },
+            { id: 99, name: "Itapoã", category: "Belo Horizonte", price: 145.00 },
+            { id: 100, name: "Jaqueline", category: "Belo Horizonte", price: 145.00 },
+            { id: 101, name: "Jaraguá", category: "Belo Horizonte", price: 162.00 },
+            { id: 102, name: "Jardim Alvorada", category: "Belo Horizonte", price: 190.00 },
+            { id: 103, name: "Jardim América", category: "Belo Horizonte", price: 213.00 },
+            { id: 104, name: "Jardim Atlântico", category: "Belo Horizonte", price: 147.00 },
+            { id: 105, name: "Jardim dos Comerciários", category: "Belo Horizonte", price: 147.00 },
+            { id: 106, name: "Jardim Europa", category: "Belo Horizonte", price: 147.00 },
+            { id: 107, name: "Jardim Guanabara", category: "Belo Horizonte", price: 147.00 },
+            { id: 108, name: "Jardim Leblon", category: "Belo Horizonte", price: 187.00 },
+            { id: 109, name: "Jardim Montanhês", category: "Belo Horizonte", price: 187.00 },
+            { id: 110, name: "Jardim Paquetá", category: "Belo Horizonte", price: 164.00 },
+            { id: 111, name: "Jardim Pirineus", category: "Belo Horizonte", price: 225.00 },
+            { id: 112, name: "Jardim Vitória", category: "Belo Horizonte", price: 198.00 },
+            { id: 113, name: "Jardinópolis", category: "Belo Horizonte", price: 225.00 },
+            { id: 114, name: "Jatobá", category: "Belo Horizonte", price: 243.00 },
+            { id: 115, name: "João Pinheiro", category: "Belo Horizonte", price: 206.00 },
+            { id: 116, name: "Juliana", category: "Belo Horizonte", price: 147.00 },
+            { id: 117, name: "Lagoinha - Centro", category: "Belo Horizonte", price: 186.00 },
+            { id: 118, name: "Lagoinha - Venda Nova", category: "Belo Horizonte", price: 179.00 },
+            { id: 119, name: "Letícia", category: "Belo Horizonte", price: 150.00 },
+            { id: 120, name: "Liberdade", category: "Belo Horizonte", price: 162.00 },
+            { id: 121, name: "Luxemburgo", category: "Belo Horizonte", price: 217.00 },
+            { id: 122, name: "Madre Gertrudes", category: "Belo Horizonte", price: 225.00 },
+            { id: 123, name: "Manacás", category: "Belo Horizonte", price: 187.00 },
+            { id: 124, name: "Mangabeiras", category: "Belo Horizonte", price: 211.00 },
+            { id: 125, name: "Mantiqueira", category: "Belo Horizonte", price: 179.00 },
+            { id: 126, name: "Marajó", category: "Belo Horizonte", price: 225.00 },
+            { id: 127, name: "Maria Goretti", category: "Belo Horizonte", price: 163.00 },
+            { id: 128, name: "Milanês", category: "Belo Horizonte", price: 210.00 },
+            { id: 129, name: "Milionários", category: "Belo Horizonte", price: 225.00 },
+            { id: 130, name: "Minas Brasil", category: "Belo Horizonte", price: 187.00 },
+            { id: 131, name: "Minas Caixa", category: "Belo Horizonte", price: 150.00 },
+            { id: 132, name: "Minas Shopping", category: "Belo Horizonte", price: 166.00 },
+            { id: 133, name: "Mineirão - Estádio", category: "Belo Horizonte", price: 164.00 },
+            { id: 134, name: "Mineirinho - Ginásio", category: "Belo Horizonte", price: 164.00 },
+            { id: 135, name: "Monsenhor Messias", category: "Belo Horizonte", price: 187.00 },
+            { id: 136, name: "Nazaré", category: "Belo Horizonte", price: 187.00 },
+            { id: 137, name: "Nova Barroca", category: "Belo Horizonte", price: 225.00 },
+            { id: 138, name: "Nova Cachoeirinha", category: "Belo Horizonte", price: 182.00 },
+            { id: 139, name: "Nova Cintra", category: "Belo Horizonte", price: 225.00 },
+            { id: 140, name: "Nova Esperança", category: "Belo Horizonte", price: 190.00 },
+            { id: 141, name: "Nova Floresta", category: "Belo Horizonte", price: 180.00 },
+            { id: 142, name: "Nova Gameleira", category: "Belo Horizonte", price: 213.00 },
+            { id: 143, name: "Nova Granada", category: "Belo Horizonte", price: 213.00 },
+            { id: 144, name: "Nova Pampulha", category: "Belo Horizonte", price: 190.00 },
+            { id: 145, name: "Nova Suíça", category: "Belo Horizonte", price: 213.00 },
+            { id: 146, name: "Nova Vista", category: "Belo Horizonte", price: 187.00 },
+            { id: 147, name: "Nova York", category: "Belo Horizonte", price: 135.00 },
+            { id: 148, name: "Novo São Lucas", category: "Belo Horizonte", price: 202.00 },
+            { id: 149, name: "Olhos D'Água", category: "Belo Horizonte", price: 230.00 },
+            { id: 150, name: "Ouro Preto", category: "Belo Horizonte", price: 164.00 },
+            { id: 151, name: "Padre Eustáquio", category: "Belo Horizonte", price: 190.00 },
+            { id: 152, name: "Palmares", category: "Belo Horizonte", price: 166.00 },
+            { id: 153, name: "Palmeiras", category: "Belo Horizonte", price: 225.00 },
+            { id: 154, name: "Paquetá", category: "Belo Horizonte", price: 164.00 },
+            { id: 155, name: "Paraíso", category: "Belo Horizonte", price: 210.00 },
+            { id: 156, name: "Parque da Colina", category: "Belo Horizonte", price: 225.00 },
+            { id: 157, name: "Parque Riachuelo", category: "Belo Horizonte", price: 168.00 },
+            { id: 158, name: "Parque São João Batista", category: "Belo Horizonte", price: 170.00 },
+            { id: 159, name: "Pedro II", category: "Belo Horizonte", price: 190.00 },
+            { id: 160, name: "Pindorama", category: "Belo Horizonte", price: 210.00 },
+            { id: 161, name: "Pirajá", category: "Belo Horizonte", price: 166.00 },
+            { id: 162, name: "Piratininga / Rio Branco", category: "Belo Horizonte", price: 143.00 },
+            { id: 163, name: "Planalto", category: "Belo Horizonte", price: 145.00 },
+            { id: 164, name: "Pompéia", category: "Belo Horizonte", price: 207.00 },
+            { id: 165, name: "Praça 12", category: "Belo Horizonte", price: 176.00 },
+            { id: 166, name: "Praça São Vicente", category: "Belo Horizonte", price: 190.00 },
+            { id: 167, name: "Prado", category: "Belo Horizonte", price: 202.00 },
+            { id: 168, name: "Primeiro de Maio", category: "Belo Horizonte", price: 162.00 },
+            { id: 169, name: "Progresso", category: "Belo Horizonte", price: 202.00 },
+            { id: 170, name: "Providência", category: "Belo Horizonte", price: 162.00 },
+            { id: 171, name: "Renascença", category: "Belo Horizonte", price: 166.00 },
+            { id: 172, name: "Ribeiro de Abreu", category: "Belo Horizonte", price: 191.00 },
+            { id: 173, name: "Rio Branco", category: "Belo Horizonte", price: 143.00 },
+            { id: 174, name: "Sagrada Família", category: "Belo Horizonte", price: 187.00 },
+            { id: 175, name: "Salgado Filho", category: "Belo Horizonte", price: 213.00 },
+            { id: 176, name: "Santa Amélia", category: "Belo Horizonte", price: 145.00 },
+            { id: 177, name: "Santa Branca", category: "Belo Horizonte", price: 145.00 },
+            { id: 178, name: "Santa Cruz", category: "Belo Horizonte", price: 166.00 },
+            { id: 179, name: "Santa Efigênia", category: "Belo Horizonte", price: 202.00 },
+            { id: 180, name: "Santa Helena - Barreiro", category: "Belo Horizonte", price: 242.00 },
+            { id: 181, name: "Santa Inês", category: "Belo Horizonte", price: 187.00 },
+            { id: 182, name: "Santa Lúcia", category: "Belo Horizonte", price: 228.00 },
+            { id: 183, name: "Santa Marcelina", category: "Belo Horizonte", price: 164.00 },
+            { id: 184, name: "Santa Maria", category: "Belo Horizonte", price: 225.00 },
+            { id: 185, name: "Santa Mônica", category: "Belo Horizonte", price: 144.00 },
+            { id: 186, name: "Santa Rosa", category: "Belo Horizonte", price: 162.00 },
+            { id: 187, name: "Santa Tereza", category: "Belo Horizonte", price: 174.00 },
+            { id: 188, name: "Santa Terezinha", category: "Belo Horizonte", price: 187.00 },
+            { id: 189, name: "Santo André", category: "Belo Horizonte", price: 176.00 },
+            { id: 190, name: "Santo Antônio", category: "Belo Horizonte", price: 202.00 },
+            { id: 191, name: "Santo Inácio", category: "Belo Horizonte", price: 144.00 },
+            { id: 192, name: "São Bento", category: "Belo Horizonte", price: 228.00 },
+            { id: 193, name: "São Bernardo", category: "Belo Horizonte", price: 144.00 },
+            { id: 194, name: "São Cristóvão", category: "Belo Horizonte", price: 176.00 },
+            { id: 195, name: "São Francisco", category: "Belo Horizonte", price: 164.00 },
+            { id: 196, name: "São Gabriel", category: "Belo Horizonte", price: 162.00 },
+            { id: 197, name: "São Geraldo", category: "Belo Horizonte", price: 207.00 },
+            { id: 198, name: "São João Batista - Venda Nova", category: "Belo Horizonte", price: 144.00 },
+            { id: 199, name: "São José - Pampulha", category: "Belo Horizonte", price: 162.00 },
+            { id: 200, name: "São José Pedro II", category: "Belo Horizonte", price: 187.00 },
+            { id: 201, name: "São Lucas", category: "Belo Horizonte", price: 198.00 },
+            { id: 202, name: "São Luiz (Pampulha)", category: "Belo Horizonte", price: 164.00 },
+            { id: 203, name: "São Marcos", category: "Belo Horizonte", price: 166.00 },
+            { id: 204, name: "São Paulo", category: "Belo Horizonte", price: 166.00 },
+            { id: 205, name: "São Pedro", category: "Belo Horizonte", price: 202.00 },
+            { id: 206, name: "São Salvador", category: "Belo Horizonte", price: 203.00 },
+            { id: 207, name: "São Vicente / Padre Eustáquio", category: "Belo Horizonte", price: 187.00 },
+            { id: 208, name: "Saudade", category: "Belo Horizonte", price: 207.00 },
+            { id: 209, name: "Senhor Bom Jesus", category: "Belo Horizonte", price: 176.00 },
+            { id: 210, name: "Serra", category: "Belo Horizonte", price: 202.00 },
+            { id: 211, name: "Serra Verde", category: "Belo Horizonte", price: 144.00 },
+            { id: 212, name: "Serrano", category: "Belo Horizonte", price: 187.00 },
+            { id: 213, name: "Shopping Del Rey", category: "Belo Horizonte", price: 183.00 },
+            { id: 214, name: "Silveira", category: "Belo Horizonte", price: 166.00 },
+            { id: 215, name: "Sion", category: "Belo Horizonte", price: 202.00 },
+            { id: 216, name: "Suzana / UNIFENAS", category: "Belo Horizonte", price: 162.00 },
+            { id: 217, name: "Taquaril", category: "Belo Horizonte", price: 221.00 },
+            { id: 218, name: "Teixeira Dias", category: "Belo Horizonte", price: 238.00 },
+            { id: 219, name: "Tirol", category: "Belo Horizonte", price: 240.00 },
+            { id: 220, name: "Trevo", category: "Belo Horizonte", price: 187.00 },
+            { id: 221, name: "Tupi", category: "Belo Horizonte", price: 162.00 },
+            { id: 222, name: "UFMG", category: "Belo Horizonte", price: 164.00 },
+            { id: 223, name: "União", category: "Belo Horizonte", price: 166.00 },
+            { id: 224, name: "Universitário", category: "Belo Horizonte", price: 162.00 },
+            { id: 225, name: "Usiminas", category: "Belo Horizonte", price: 161.00 },
+            { id: 226, name: "Vale do Jatobá", category: "Belo Horizonte", price: 240.00 },
+            { id: 227, name: "Venda Nova", category: "Belo Horizonte", price: 144.00 },
+            { id: 228, name: "Vera Cruz", category: "Belo Horizonte", price: 221.00 },
+            { id: 229, name: "Vila Clóris", category: "Belo Horizonte", price: 144.00 },
+            { id: 230, name: "Vila Oeste", category: "Belo Horizonte", price: 210.00 },
+            { id: 231, name: "Vila Paris", category: "Belo Horizonte", price: 214.00 },
+            { id: 232, name: "Vila Reunidas", category: "Belo Horizonte", price: 160.00 },
+            { id: 233, name: "Vila Virgínia", category: "Belo Horizonte", price: 221.00 },
+            { id: 234, name: "Vista Alegre", category: "Belo Horizonte", price: 221.00 },
+            { id: 235, name: "Xangrilá", category: "Belo Horizonte", price: 187.00 },
+            { id: 236, name: "Zoológico", category: "Belo Horizonte", price: 187.00 },
+
+            // CONFINS
+            { id: 237, name: "Centro de Manutenção Gol", category: "Confins", price: 34.00 },
+            { id: 238, name: "Confins Sede", category: "Confins", price: 46.00 },
+            { id: 239, name: "Hotel Fazenda Confins", category: "Confins", price: 60.00 },
+            { id: 240, name: "Gran Royale", category: "Confins", price: 85.00 },
+            { id: 241, name: "Lagoa dos Mares", category: "Confins", price: 93.00 },
+            { id: 242, name: "Mineração Lapa Vermelha", category: "Confins", price: 66.00 },
+            { id: 243, name: "Tavares", category: "Confins", price: 93.00 },
+            { id: 244, name: "Retiro", category: "Confins", price: 99.00 },
+
+            // BETIM
+            { id: 245, name: "Açude", category: "Betim", price: 310.00 },
+            { id: 246, name: "Alvorada", category: "Betim", price: 310.00 },
+            { id: 247, name: "Amazonas", category: "Betim", price: 310.00 },
+            { id: 248, name: "Angola", category: "Betim", price: 310.00 },
+            { id: 249, name: "Atlantic", category: "Betim", price: 267.00 },
+            { id: 250, name: "Bandeirinhas", category: "Betim", price: 344.00 },
+            { id: 251, name: "Bom Retiro", category: "Betim", price: 310.00 },
+            { id: 252, name: "Cidade Verde", category: "Betim", price: 310.00 },
+            { id: 253, name: "Citrolândia", category: "Betim", price: 344.00 },
+            { id: 254, name: "Distrito Ind. Paulo Camilo", category: "Betim", price: 267.00 },
+            { id: 255, name: "Espírito Santo", category: "Betim", price: 310.00 },
+            { id: 256, name: "Fiat Automóveis", category: "Betim", price: 267.00 },
+            { id: 257, name: "Fiat Automóveis Disposição", category: "Betim", price: 679.00 },
+            { id: 258, name: "Filadélfia", category: "Betim", price: 310.00 },
+            { id: 259, name: "Francelino", category: "Betim", price: 344.00 },
+            { id: 260, name: "Imbiruçu", category: "Betim", price: 272.00 },
+            { id: 261, name: "Inconfidentes", category: "Betim", price: 310.00 },
+            { id: 262, name: "Ingá", category: "Betim", price: 310.00 },
+            { id: 263, name: "Jardim Alterosa 1ª Seção", category: "Betim", price: 310.00 },
+            { id: 264, name: "Jardim Alterosa 2ª Seção", category: "Betim", price: 310.00 },
+            { id: 265, name: "Jardim Cidade", category: "Betim", price: 310.00 },
+            { id: 266, name: "Jardim Piemonte", category: "Betim", price: 250.00 },
+            { id: 267, name: "Jardim Teresópolis", category: "Betim", price: 272.00 },
+            { id: 268, name: "Quintas do Godói", category: "Betim", price: 379.00 },
+            { id: 269, name: "Marimbá", category: "Betim", price: 342.00 },
+            { id: 270, name: "Nova Baden", category: "Betim", price: 272.00 },
+            { id: 271, name: "Petrobrás", category: "Betim", price: 267.00 },
+            { id: 272, name: "Petrópolis", category: "Betim", price: 310.00 },
+            { id: 273, name: "Petrovale", category: "Betim", price: 272.00 },
+            { id: 274, name: "PTB", category: "Betim", price: 272.00 },
+            { id: 275, name: "Residencial Montserrat", category: "Betim", price: 379.00 },
+            { id: 276, name: "São Caetano", category: "Betim", price: 272.00 },
+            { id: 277, name: "São Luiz", category: "Betim", price: 310.00 },
+            { id: 278, name: "Betim Sede", category: "Betim", price: 310.00 },
+            { id: 279, name: "Teksid", category: "Betim", price: 272.00 },
+            { id: 280, name: "Vianópolis", category: "Betim", price: 393.00 },
+            { id: 281, name: "Vila Cristina", category: "Betim", price: 310.00 },
+
+            // CONTAGEM
+            { id: 282, name: "Água Branca", category: "Contagem", price: 221.00 },
+            { id: 283, name: "Alvorada", category: "Contagem", price: 242.00 },
+            { id: 284, name: "Amazonas", category: "Contagem", price: 240.00 },
+            { id: 285, name: "Arvoredo", category: "Contagem", price: 221.00 },
+            { id: 286, name: "Bernardo Monteiro", category: "Contagem", price: 245.00 },
+            { id: 287, name: "Cabral", category: "Contagem", price: 221.00 },
+            { id: 288, name: "Campina Verde", category: "Contagem", price: 221.00 },
+            { id: 289, name: "Carrefour", category: "Contagem", price: 240.00 },
+            { id: 290, name: "CEASA", category: "Contagem", price: 221.00 },
+            { id: 291, name: "Cemitério Parque Renascer", category: "Contagem", price: 240.00 },
+            { id: 292, name: "Cidade Industrial", category: "Contagem", price: 240.00 },
+            { id: 293, name: "Cincão", category: "Contagem", price: 221.00 },
+            { id: 294, name: "Cinco", category: "Contagem", price: 221.00 },
+            { id: 295, name: "Colonial", category: "Contagem", price: 262.00 },
+            { id: 296, name: "Colorado", category: "Contagem", price: 221.00 },
+            { id: 297, name: "Conjunto Monte Castelo", category: "Contagem", price: 240.00 },
+            { id: 298, name: "Consigua", category: "Contagem", price: 245.00 },
+            { id: 299, name: "Contagem Sede", category: "Contagem", price: 245.00 },
+            { id: 300, name: "Distrito Ind. Jardim Riacho", category: "Contagem", price: 240.00 },
+            { id: 301, name: "Durval de Barros", category: "Contagem", price: 264.00 },
+            { id: 302, name: "Eldorado", category: "Contagem", price: 221.00 },
+            { id: 303, name: "Estância do Hibisco", category: "Contagem", price: 245.00 },
+            { id: 304, name: "Flamengo", category: "Contagem", price: 240.00 },
+            { id: 305, name: "Fonte Grande", category: "Contagem", price: 245.00 },
+            { id: 306, name: "Glória", category: "Contagem", price: 221.00 },
+            { id: 307, name: "Granja Vista Alegre", category: "Contagem", price: 288.00 },
+            { id: 308, name: "Guanabara", category: "Contagem", price: 221.00 },
+            { id: 309, name: "Inconfidentes", category: "Contagem", price: 240.00 },
+            { id: 310, name: "Industrial", category: "Contagem", price: 221.00 },
+            { id: 311, name: "Itaú Power Shopping", category: "Contagem", price: 221.00 },
+            { id: 312, name: "Jardim Industrial", category: "Contagem", price: 238.00 },
+            { id: 313, name: "JK", category: "Contagem", price: 221.00 },
+            { id: 314, name: "Kennedy", category: "Contagem", price: 221.00 },
+            { id: 315, name: "Laguna", category: "Contagem", price: 221.00 },
+            { id: 316, name: "Lindéia", category: "Contagem", price: 264.00 },
+            { id: 317, name: "Morada Nova", category: "Contagem", price: 221.00 },
+            { id: 318, name: "Nacional - Conjunto Carajás", category: "Contagem", price: 221.00 },
+            { id: 319, name: "Nova Contagem", category: "Contagem", price: 322.00 },
+            { id: 320, name: "Novo Eldorado", category: "Contagem", price: 221.00 },
+            { id: 321, name: "Novo Progresso", category: "Contagem", price: 221.00 },
+            { id: 322, name: "Novo Riacho", category: "Contagem", price: 240.00 },
+            { id: 323, name: "Palácio dos Leilões", category: "Contagem", price: 245.00 },
+            { id: 324, name: "Parque Recreio", category: "Contagem", price: 221.00 },
+            { id: 325, name: "Parque São João", category: "Contagem", price: 221.00 },
+            { id: 326, name: "Petrolândia", category: "Contagem", price: 270.00 },
+            { id: 327, name: "Praia", category: "Contagem", price: 262.00 },
+            { id: 328, name: "Regina", category: "Contagem", price: 264.00 },
+            { id: 329, name: "Ressaca", category: "Contagem", price: 221.00 },
+            { id: 330, name: "Retiro", category: "Contagem", price: 305.00 },
+            { id: 331, name: "Riacho das Pedras", category: "Contagem", price: 240.00 },
+            { id: 332, name: "Santa Cruz", category: "Contagem", price: 221.00 },
+            { id: 333, name: "Santa Helena", category: "Contagem", price: 245.00 },
+            { id: 334, name: "São Joaquim", category: "Contagem", price: 221.00 },
+            { id: 335, name: "São Sebastião", category: "Contagem", price: 240.00 },
+            { id: 336, name: "Sapucaia", category: "Contagem", price: 273.00 },
+            { id: 337, name: "Tambasa", category: "Contagem", price: 221.00 },
+            { id: 338, name: "Tropical", category: "Contagem", price: 273.00 },
+            { id: 339, name: "Vila Belém", category: "Contagem", price: 264.00 },
+
+            // LAGOA SANTA
+            { id: 340, name: "Aeronautas", category: "Lagoa Santa", price: 87.00 },
+            { id: 341, name: "Campinho", category: "Lagoa Santa", price: 137.00 },
+            { id: 342, name: "Condados da Lagoa", category: "Lagoa Santa", price: 103.00 },
+            { id: 343, name: "Condomínio Bougainville", category: "Lagoa Santa", price: 103.00 },
+            { id: 344, name: "Diamed", category: "Lagoa Santa", price: 76.00 },
+            { id: 345, name: "Estância das Amendoeiras", category: "Lagoa Santa", price: 103.00 },
+            { id: 346, name: "Estância da Mata", category: "Lagoa Santa", price: 168.00 },
+            { id: 347, name: "Gruta da Lapinha", category: "Lagoa Santa", price: 137.00 },
+            { id: 348, name: "Hotel Comfort", category: "Lagoa Santa", price: 76.00 },
+            { id: 349, name: "Hotel CEP (Vila Maria)", category: "Lagoa Santa", price: 135.00 },
+            { id: 350, name: "Hotel Ramada", category: "Lagoa Santa", price: 103.00 },
+            { id: 351, name: "Hotel Flor da Terra", category: "Lagoa Santa", price: 135.00 },
+            { id: 352, name: "Jardim Ipê", category: "Lagoa Santa", price: 98.00 },
+            { id: 353, name: "Joá", category: "Lagoa Santa", price: 103.00 },
+            { id: 354, name: "Lagoa Santa / Pedro Leopoldo", category: "Lagoa Santa", price: 155.00 },
+            { id: 355, name: "Lundcéia", category: "Lagoa Santa", price: 103.00 },
+            { id: 356, name: "Morada da Lapinha", category: "Lagoa Santa", price: 135.00 },
+            { id: 357, name: "Pinto Coelho", category: "Lagoa Santa", price: 103.00 },
+            { id: 358, name: "Recanto da Lagoa", category: "Lagoa Santa", price: 103.00 },
+            { id: 359, name: "Lagoa Santa Sede", category: "Lagoa Santa", price: 103.00 },
+            { id: 360, name: "Vale dos Sonhos", category: "Lagoa Santa", price: 135.00 },
+            { id: 361, name: "Várzea", category: "Lagoa Santa", price: 103.00 },
+            { id: 362, name: "Vila Asas", category: "Lagoa Santa", price: 87.00 },
+            { id: 363, name: "Vila Maria", category: "Lagoa Santa", price: 135.00 },
+            { id: 364, name: "Visão", category: "Lagoa Santa", price: 92.00 },
+
+            // NOVA LIMA
+            { id: 365, name: "Anglo Gold", category: "Nova Lima", price: 332.00 },
+            { id: 366, name: "Anglo Gold Planta Queiroz", category: "Nova Lima", price: 346.00 },
+            { id: 367, name: "Biocor", category: "Nova Lima", price: 250.00 },
+            { id: 368, name: "Bosque do Jambreiro", category: "Nova Lima", price: 310.00 },
+            { id: 369, name: "Bosque Ribeira", category: "Nova Lima", price: 270.00 },
+            { id: 370, name: "Cabeceiras", category: "Nova Lima", price: 332.00 },
+            { id: 371, name: "Clínica de Olhos", category: "Nova Lima", price: 250.00 },
+            { id: 372, name: "Condomínio Alphaville", category: "Nova Lima", price: 334.00 },
+            { id: 373, name: "Condomínio Ecoville", category: "Nova Lima", price: 302.00 },
+            { id: 374, name: "Condomínio Ipê da Serra", category: "Nova Lima", price: 302.00 },
+            { id: 375, name: "Condomínio Passárgada", category: "Nova Lima", price: 330.00 },
+            { id: 376, name: "Condomínio Quintas do Sol", category: "Nova Lima", price: 302.00 },
+            { id: 377, name: "Condomínio Recanto da Serra", category: "Nova Lima", price: 402.00 },
+            { id: 378, name: "Condomínio Residencial Sul", category: "Nova Lima", price: 310.00 },
+            { id: 379, name: "Estância Serrana", category: "Nova Lima", price: 370.00 },
+            { id: 380, name: "Faculdade Milton Campos", category: "Nova Lima", price: 250.00 },
+            { id: 381, name: "Fiat do Brasil / Piemonte", category: "Nova Lima", price: 250.00 },
+            { id: 382, name: "Hotel Lumière", category: "Nova Lima", price: 250.00 },
+            { id: 383, name: "Jardim Canadá", category: "Nova Lima", price: 272.00 },
+            { id: 384, name: "Jardim Manacás", category: "Nova Lima", price: 272.00 },
+            { id: 385, name: "Jardim Petrópolis", category: "Nova Lima", price: 332.00 },
+            { id: 386, name: "Macacos", category: "Nova Lima", price: 302.00 },
+            { id: 387, name: "Miguelão", category: "Nova Lima", price: 302.00 },
+            { id: 388, name: "Mina do Pau Branco", category: "Nova Lima", price: 334.00 },
+            { id: 389, name: "Mina do Tamanduá", category: "Nova Lima", price: 302.00 },
+            { id: 390, name: "Minas Águas Claras (MBR)", category: "Nova Lima", price: 250.00 },
+            { id: 391, name: "Morro do Chapéu / Cap. do Mato", category: "Nova Lima", price: 330.00 },
+            { id: 392, name: "Mutuca", category: "Nova Lima", price: 272.00 },
+            { id: 393, name: "Ouro Velho - Mansões", category: "Nova Lima", price: 310.00 },
+            { id: 394, name: "Retiro das Pedras", category: "Nova Lima", price: 272.00 },
+            { id: 395, name: "Nova Lima Sede", category: "Nova Lima", price: 332.00 },
+            { id: 396, name: "Serra Del Rey", category: "Nova Lima", price: 270.00 },
+            { id: 397, name: "Torre Alta Villa", category: "Nova Lima", price: 250.00 },
+            { id: 398, name: "Vale do Sereno", category: "Nova Lima", price: 250.00 },
+            { id: 399, name: "Vale do Ouro", category: "Nova Lima", price: 310.00 },
+            { id: 400, name: "Vale do Sol", category: "Nova Lima", price: 302.00 },
+            { id: 401, name: "Vale dos Cristais", category: "Nova Lima", price: 310.00 },
+            { id: 402, name: "Veredas", category: "Nova Lima", price: 332.00 },
+            { id: 403, name: "Vila Alpina", category: "Nova Lima", price: 270.00 },
+            { id: 404, name: "Vila Castela", category: "Nova Lima", price: 270.00 },
+            { id: 405, name: "Vila Ipê", category: "Nova Lima", price: 310.00 },
+            { id: 406, name: "Vila da Madeira", category: "Nova Lima", price: 320.00 },
+            { id: 407, name: "Vila do Ouro", category: "Nova Lima", price: 332.00 },
+            { id: 408, name: "Vila da Serra / Seis Pistas", category: "Nova Lima", price: 250.00 },
+            { id: 409, name: "Vila de Lacs", category: "Nova Lima", price: 334.00 },
+            { id: 410, name: "Vila Del Rey", category: "Nova Lima", price: 270.00 },
+            { id: 411, name: "Village Terrace", category: "Nova Lima", price: 270.00 },
+            { id: 412, name: "Ville de Montagne", category: "Nova Lima", price: 310.00 },
+
+            // PEDRO LEOPOLDO
+            { id: 413, name: "Andiara", category: "Pedro Leopoldo", price: 91.00 },
+            { id: 414, name: "Pedro Leopoldo / Lagoa Santa", category: "Pedro Leopoldo", price: 155.00 },
+            { id: 415, name: "Cachoeira do Urubu", category: "Pedro Leopoldo", price: 150.00 },
+            { id: 416, name: "Ciminas (Holdercim)", category: "Pedro Leopoldo", price: 118.00 },
+            { id: 417, name: "Distrito Industrial PL", category: "Pedro Leopoldo", price: 87.00 },
+            { id: 418, name: "Dr. Lund", category: "Pedro Leopoldo", price: 75.00 },
+            { id: 419, name: "Lagoa de Santo Antônio", category: "Pedro Leopoldo", price: 118.00 },
+            { id: 420, name: "Lua", category: "Pedro Leopoldo", price: 103.00 },
+            { id: 421, name: "Precom", category: "Pedro Leopoldo", price: 75.00 },
+            { id: 422, name: "Santo Antônio da Barra", category: "Pedro Leopoldo", price: 118.00 },
+            { id: 423, name: "Pedro Leopoldo Sede", category: "Pedro Leopoldo", price: 95.00 },
+            { id: 424, name: "Universidade PL", category: "Pedro Leopoldo", price: 75.00 },
+            { id: 425, name: "Vera Cruz PL", category: "Pedro Leopoldo", price: 160.00 },
+
+            // VESPASIANO
+            { id: 426, name: "Angicos", category: "Vespasiano", price: 96.00 },
+            { id: 427, name: "Cidade do Galo", category: "Vespasiano", price: 118.00 },
+            { id: 428, name: "Cipriano", category: "Vespasiano", price: 98.00 },
+            { id: 429, name: "Condomínio Alphaville Vespasiano", category: "Vespasiano", price: 98.00 },
+            { id: 430, name: "Demag", category: "Vespasiano", price: 88.00 },
+            { id: 431, name: "Distrito Industrial Vespasiano", category: "Vespasiano", price: 88.00 },
+            { id: 432, name: "Gávea", category: "Vespasiano", price: 98.00 },
+            { id: 433, name: "Hotel Dom Otto", category: "Vespasiano", price: 98.00 },
+            { id: 434, name: "Hotel Gran Belo", category: "Vespasiano", price: 118.00 },
+            { id: 435, name: "Hotel San Diego", category: "Vespasiano", price: 88.00 },
+            { id: 436, name: "Hotel Supreme", category: "Vespasiano", price: 98.00 },
+            { id: 437, name: "Jardim da Glória", category: "Vespasiano", price: 98.00 },
+            { id: 438, name: "Morro Alto", category: "Vespasiano", price: 98.00 },
+            { id: 439, name: "Motel Mediterrâneo", category: "Vespasiano", price: 98.00 },
+            { id: 440, name: "Nazea", category: "Vespasiano", price: 88.00 },
+            { id: 441, name: "Nova Pampulha Vespasiano", category: "Vespasiano", price: 125.00 },
+            { id: 442, name: "Sandvik - Confins", category: "Vespasiano", price: 88.00 },
+            { id: 443, name: "Sandvik - Hotel Transamérica", category: "Vespasiano", price: 118.00 },
+            { id: 444, name: "Sandvik - Vespasiano Sede", category: "Vespasiano", price: 88.00 },
+            { id: 445, name: "Sandvik - Matozinhos", category: "Vespasiano", price: 224.00 },
+            { id: 446, name: "Sandvik - Pedro Leopoldo", category: "Vespasiano", price: 170.00 },
+            { id: 447, name: "Santa Clara", category: "Vespasiano", price: 98.00 },
+            { id: 448, name: "Vespasiano Sede", category: "Vespasiano", price: 81.00 },
+
+            // SETE LAGOAS
+            { id: 449, name: "Aeroporto de Sete Lagoas", category: "Sete Lagoas", price: 281.00 },
+            { id: 450, name: "Arena do Jacaré", category: "Sete Lagoas", price: 281.00 },
+            { id: 451, name: "Barreiro Sete Lagoas", category: "Sete Lagoas", price: 281.00 },
+            { id: 452, name: "Boa Vista Sete Lagoas", category: "Sete Lagoas", price: 281.00 },
+            { id: 453, name: "Engenho Sete Lagoas", category: "Sete Lagoas", price: 281.00 },
+            { id: 454, name: "Fiat Iveco", category: "Sete Lagoas", price: 312.00 },
+            { id: 455, name: "Hotel JM Resort", category: "Sete Lagoas", price: 329.00 },
+            { id: 456, name: "Santa Helena Sete Lagoas", category: "Sete Lagoas", price: 281.00 },
+            { id: 457, name: "Sete Lagoas Sede", category: "Sete Lagoas", price: 281.00 },
+            { id: 458, name: "Siderurgia Plantar", category: "Sete Lagoas", price: 329.00 },
+            { id: 459, name: "Shopping Sete Lagoas", category: "Sete Lagoas", price: 281.00 },
+            { id: 460, name: "Recanto da Serra", category: "Sete Lagoas", price: 281.00 },
+
+            // BRUMADINHO & INHOTIM
+            { id: 461, name: "Brumadinho Sede", category: "Brumadinho", price: 440.00 },
+            { id: 462, name: "Mina Córrego do Feijão", category: "Brumadinho", price: 470.00 },
+            { id: 463, name: "Museu Inhotim", category: "Brumadinho", price: 440.00 },
+            { id: 464, name: "Condomínio Recanto da Serra", category: "Brumadinho", price: 402.00 },
+            { id: 465, name: "Retiro do Chalé", category: "Brumadinho", price: 402.00 },
+
+            // RIBEIRÃO DAS NEVES
+            { id: 466, name: "Bairro da Lagoa", category: "Ribeirão das Neves", price: 180.00 },
+            { id: 467, name: "Belvedere Neves", category: "Ribeirão das Neves", price: 302.00 },
+            { id: 468, name: "Hotel Fazenda Ipê Amarelo", category: "Ribeirão das Neves", price: 405.00 },
+            { id: 469, name: "Imbrasil", category: "Ribeirão das Neves", price: 302.00 },
+            { id: 470, name: "Justinópolis", category: "Ribeirão das Neves", price: 180.00 },
+            { id: 471, name: "Liberdade Neves", category: "Ribeirão das Neves", price: 302.00 },
+            { id: 472, name: "Maria Helena", category: "Ribeirão das Neves", price: 180.00 },
+            { id: 473, name: "Menezes", category: "Ribeirão das Neves", price: 230.00 },
+            { id: 474, name: "Nova Pampulha Neves", category: "Ribeirão das Neves", price: 190.00 },
+            { id: 475, name: "Pedra Branca", category: "Ribeirão das Neves", price: 180.00 },
+            { id: 476, name: "Ribeirão das Neves Sede", category: "Ribeirão das Neves", price: 240.00 },
+            { id: 477, name: "Santa Martinha", category: "Ribeirão das Neves", price: 240.00 },
+            { id: 478, name: "Veneza", category: "Ribeirão das Neves", price: 302.00 },
+
+            // SABARÁ
+            { id: 479, name: "Ana Lúcia Sabará", category: "Sabará", price: 186.00 },
+            { id: 480, name: "Borges", category: "Sabará", price: 205.00 },
+            { id: 481, name: "Borbagato", category: "Sabará", price: 205.00 },
+            { id: 482, name: "Cotochés / Ravena", category: "Sabará", price: 332.00 },
+            { id: 483, name: "CVRD (BR-262 Km 14)", category: "Sabará", price: 205.00 },
+            { id: 484, name: "General Carneiro", category: "Sabará", price: 198.00 },
+            { id: 485, name: "Hotel Fazenda Capuã", category: "Sabará", price: 295.00 },
+
+            // JABOTICATUBAS
+            { id: 486, name: "Condomínio Morada do Lago", category: "Jaboticatubas", price: 233.00 },
+            { id: 487, name: "Hotel Canto da Siriema", category: "Jaboticatubas", price: 412.00 },
+            { id: 488, name: "São José de Almeida", category: "Jaboticatubas", price: 298.00 },
+            { id: 489, name: "Jaboticatubas Sede", category: "Jaboticatubas", price: 436.00 },
+            { id: 490, name: "Serra do Cipó", category: "Jaboticatubas", price: 453.00 },
+
+            // OUTROS MUNICÍPIOS / INTERIOR
+            { id: 491, name: "Baldim Sede", category: "Outras Cidades", price: 332.00 },
+            { id: 492, name: "Caeté Sede", category: "Outras Cidades", price: 380.00 },
+            { id: 493, name: "Hotel Fazenda Tauá (Caeté)", category: "Outras Cidades", price: 325.00 },
+            { id: 494, name: "José Brandão (Caeté)", category: "Outras Cidades", price: 380.00 },
+            { id: 495, name: "Capim Branco Sede", category: "Outras Cidades", price: 209.00 },
+            { id: 496, name: "Conselheiro Lafaiete Sede", category: "Outras Cidades", price: 592.00 },
+            { id: 497, name: "Congonhas Sede", category: "Outras Cidades", price: 514.00 },
+            { id: 498, name: "Esmeraldas Sede", category: "Outras Cidades", price: 408.00 },
+            { id: 499, name: "Florestal Sede", category: "Outras Cidades", price: 464.00 },
+            { id: 500, name: "Ibirité Sede", category: "Outras Cidades", price: 313.00 },
+            { id: 501, name: "Fazenda do Rosário (Ibirité)", category: "Outras Cidades", price: 313.00 },
+            { id: 502, name: "Sarzedo Sede", category: "Outras Cidades", price: 350.00 },
+            { id: 503, name: "Igarapé Sede", category: "Outras Cidades", price: 374.00 },
+            { id: 504, name: "Inhaúma Sede / Hotel Água Treme", category: "Outras Cidades", price: 516.00 },
+            { id: 505, name: "Itabirito Sede", category: "Outras Cidades", price: 470.00 },
+            { id: 506, name: "Itabira Sede", category: "Outras Cidades", price: 542.00 },
+            { id: 507, name: "Itaúna Sede", category: "Outras Cidades", price: 490.00 },
+            { id: 508, name: "Itaguara Sede", category: "Outras Cidades", price: 552.00 },
+            { id: 509, name: "Itatiaiuçu Sede / Mina", category: "Outras Cidades", price: 488.00 },
+            { id: 510, name: "Jequitibá Sede", category: "Outras Cidades", price: 397.00 },
+            { id: 511, name: "Juatuba Sede", category: "Outras Cidades", price: 432.00 },
+            { id: 512, name: "Mário Campos Sede", category: "Outras Cidades", price: 370.00 },
+            { id: 513, name: "Mateus Leme Sede", category: "Outras Cidades", price: 437.00 },
+            { id: 514, name: "Matozinhos Sede", category: "Outras Cidades", price: 145.00 },
+            { id: 515, name: "Moeda Sede", category: "Outras Cidades", price: 538.00 },
+            { id: 516, name: "Nova União Sede", category: "Outras Cidades", price: 367.00 },
+            { id: 517, name: "Ouro Branco Sede", category: "Outras Cidades", price: 595.00 },
+            { id: 518, name: "Ouro Preto Sede", category: "Outras Cidades", price: 585.00 },
+            { id: 519, name: "Pará de Minas Sede", category: "Outras Cidades", price: 504.00 },
+            { id: 520, name: "Prudente de Morais Sede", category: "Outras Cidades", price: 215.00 },
+            { id: 521, name: "Raposos Sede", category: "Outras Cidades", price: 390.00 },
+            { id: 522, name: "Rio Acima Sede", category: "Outras Cidades", price: 402.00 },
+            { id: 523, name: "Rio Manso Sede", category: "Outras Cidades", price: 515.00 },
+            { id: 524, name: "Taquaraçu de Minas Sede", category: "Outras Cidades", price: 390.00 },
+
+            // TARIFAS ESPECIAIS & CITY TOUR & COMPLEMENTOS
+            { id: 525, name: "BH City Tour (4 horas à disposição + 100km)", category: "Tarifas Especiais / Tours", price: 343.00 },
+            { id: 526, name: "Congonhas Tour (6 horas à disposição)", category: "Tarifas Especiais / Tours", price: 760.00 },
+            { id: 527, name: "Congonhas - São João Del Rey - Tiradentes", category: "Tarifas Especiais / Tours", price: 1411.00 },
+            { id: 528, name: "F.D.C - Alphaville - Ouro Preto", category: "Tarifas Especiais / Tours", price: 625.00 },
+            { id: 529, name: "Gruta da Lapinha (3 horas de espera)", category: "Tarifas Especiais / Tours", price: 450.00 },
+            { id: 530, name: "Gruta de Maquiné (3 horas de espera)", category: "Tarifas Especiais / Tours", price: 799.00 },
+            { id: 531, name: "Ouro Preto Tour", category: "Tarifas Especiais / Tours", price: 830.00 },
+            { id: 532, name: "Ouro Preto - Congonhas Tour", category: "Tarifas Especiais / Tours", price: 1080.00 },
+            { id: 533, name: "Ouro Preto - Mariana Tour", category: "Tarifas Especiais / Tours", price: 918.00 },
+            { id: 534, name: "Ouro Preto - Mariana - Congonhas", category: "Tarifas Especiais / Tours", price: 1150.00 },
+            { id: 535, name: "Ouro Preto - Mariana - São João Del Rey", category: "Tarifas Especiais / Tours", price: 1590.00 },
+            { id: 536, name: "Ouro Preto - Mariana - São João Del Rey - Tiradentes", category: "Tarifas Especiais / Tours", price: 1690.00 },
+            { id: 537, name: "Sabará Tour", category: "Tarifas Especiais / Tours", price: 475.00 },
+
+            // COMPLEMENTOS
+            { id: 538, name: "Bandeirada (Valor Inicial)", category: "Taxas e Diárias", price: 5.40 },
+            { id: 539, name: "Deslocamento Mínimo", category: "Taxas e Diárias", price: 31.00 },
+            { id: 540, name: "Diária 8 Horas à Disposição (com 100km de franquia)", category: "Taxas e Diárias", price: 716.00 },
+            { id: 541, name: "Hora Parada", category: "Taxas e Diárias", price: 39.00 },
+            { id: 542, name: "KM Especial para Viagem", category: "Taxas e Diárias", price: 4.15 },
+            { id: 543, name: "KM Rodado Bandeira I", category: "Taxas e Diárias", price: 4.50 },
+            { id: 544, name: "KM Rodado Bandeira II", category: "Taxas e Diárias", price: 5.40 },
+            { id: 545, name: "Pernoite Fora de Belo Horizonte", category: "Taxas e Diárias", price: 190.00 }
+        ];
+
+        // Estado da aplicação
+        let selectedCategory = "TODOS";
+        let searchTerm = "";
+
+        // Elementos DOM
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const categoryContainer = document.getElementById('categoryContainer');
+        const destinationsGrid = document.getElementById('destinationsGrid');
+        const resultsCountEl = document.getElementById('resultsCount');
+        const noResultsEl = document.getElementById('noResults');
+        const resetSearchBtn = document.getElementById('resetSearchBtn');
+        const activeFilterBadge = document.getElementById('activeFilterBadge');
+
+        // Normalizador de texto (remove acentos e converte para minúsculas para busca flexível)
+        function normalizeText(text) {
+            return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+        }
+
+        // Função de Formatação de Moeda
+        function formatCurrency(val) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Inicializar Categorias Dinâmicas
+        function initCategories() {
+            const categories = ["TODOS", ...new Set(TAXI_DATABASE.map(item => item.category))];
+            
+            categoryContainer.innerHTML = categories.map(cat => {
+                const isActive = cat === selectedCategory;
+                const activeClass = isActive 
+                    ? "bg-amber-500 text-white shadow-sm font-semibold" 
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200";
+                
+                return `
+                    <button 
+                        onclick="setCategory('${cat}')" 
+                        class="px-3.5 py-1.5 rounded-lg border border-transparent transition-all duration-200 text-xs ${activeClass}"
+                    >
+                        ${cat}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // Selecionar categoria
+        window.setCategory = function(cat) {
+            selectedCategory = cat;
+            initCategories();
+            render();
+        };
+
+        // Filtrar itens do Banco de Dados
+        function filterData() {
+            const query = normalizeText(searchTerm.trim());
+
+            return TAXI_DATABASE.filter(item => {
+                // Filtro por Categoria
+                const matchesCategory = selectedCategory === "TODOS" || item.category === selectedCategory;
+
+                if (!matchesCategory) return false;
+
+                // Se não houver termo de busca, retorna verdadeiro
+                if (!query) return true;
+
+                const nameNormalized = normalizeText(item.name);
+                const categoryNormalized = normalizeText(item.category);
+
+                // Busca 1: Contém a palavra/termo digitado
+                const directMatch = nameNormalized.includes(query) || categoryNormalized.includes(query);
+
+                // Busca 2: Iniciais das palavras (Ex: "BH" -> Belo Horizonte, "CS" -> Cidade Said, etc)
+                const initials = item.name
+                    .split(/[\s\-\/\(\)]+/)
+                    .filter(word => word.length > 0)
+                    .map(word => word[0])
+                    .join('')
+                    .toLowerCase();
+
+                const matchesInitials = initials.startsWith(query);
+
+                return directMatch || matchesInitials;
+            });
+        }
+
+        // Renderizar Grid de Cards
+        function render() {
+            const filtered = filterData();
+
+            // Atualizar contador
+            resultsCountEl.innerHTML = `
+                <span class="inline-block w-2.5 h-2.5 rounded-full ${filtered.length > 0 ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+                <span>${filtered.length} ${filtered.length === 1 ? 'destino encontrado' : 'destinos encontrados'}</span>
+            `;
+
+            // Badge de filtro
+            if (selectedCategory !== "TODOS" || searchTerm) {
+                activeFilterBadge.classList.remove('hidden');
+                activeFilterBadge.innerHTML = `
+                    Filtro ativo: ${selectedCategory !== "TODOS" ? selectedCategory : ''} ${searchTerm ? `"${searchTerm}"` : ''}
+                `;
+            } else {
+                activeFilterBadge.classList.add('hidden');
+            }
+
+            // Se não houver resultados
+            if (filtered.length === 0) {
+                destinationsGrid.innerHTML = '';
+                noResultsEl.classList.remove('hidden');
+                noResultsEl.classList.add('flex');
+                return;
+            }
+
+            noResultsEl.classList.add('hidden');
+            noResultsEl.classList.remove('flex');
+
+            // Renderizar Cards
+            destinationsGrid.innerHTML = filtered.map(item => {
+                // Ícone correspondente por categoria
+                let iconClass = "fa-map-pin";
+                if (item.category === "Belo Horizonte") iconClass = "fa-city";
+                else if (item.category === "Confins") iconClass = "fa-plane-arrival";
+                else if (item.category === "Tarifas Especiais / Tours") iconClass = "fa-route";
+                else if (item.category === "Taxas e Diárias") iconClass = "fa-file-invoice-dollar";
+                else if (item.category === "Brumadinho") iconClass = "fa-tree";
+
+                return `
+                    <div class="bg-white rounded-xl p-4 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-amber-300 transition-all duration-200 flex flex-col justify-between group">
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            <div class="flex-1">
+                                <span class="inline-block text-[10px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100 mb-1">
+                                    ${item.category}
+                                </span>
+                                <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-snug group-hover:text-amber-600 transition-colors">
+                                    ${highlightMatch(item.name, searchTerm)}
+                                </h3>
+                            </div>
+                            <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-amber-500 group-hover:text-white transition-colors flex-shrink-0">
+                                <i class="fa-solid ${iconClass} text-xs"></i>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-slate-100 flex items-baseline justify-between">
+                            <span class="text-xs text-slate-400 font-medium">Valor fixado</span>
+                            <div class="text-right">
+                                <span class="text-lg font-extrabold text-emerald-600 tracking-tight">
+                                    ${formatCurrency(item.price)}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Destacar trecho buscado na interface
+        function highlightMatch(text, query) {
+            if (!query) return text;
+            const normalizedQuery = normalizeText(query);
+            const normalizedText = normalizeText(text);
+            const index = normalizedText.indexOf(normalizedQuery);
+
+            if (index === -1) return text;
+
+            const originalMatch = text.substring(index, index + query.length);
+            return text.substring(0, index) + 
+                `<mark class="bg-amber-200 text-amber-900 rounded-sm px-0.5">${originalMatch}</mark>` + 
+                text.substring(index + query.length);
+        }
+
+        // Eventos da Pesquisa
+        searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            if (searchTerm) {
+                clearSearchBtn.classList.remove('hidden');
+            } else {
+                clearSearchBtn.classList.add('hidden');
+            }
+            render();
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchTerm = '';
+            clearSearchBtn.classList.add('hidden');
+            searchInput.focus();
+            render();
+        });
+
+        resetSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchTerm = '';
+            selectedCategory = "TODOS";
+            clearSearchBtn.classList.add('hidden');
+            initCategories();
+            render();
+        });
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            initCategories();
+            render();
+        });
+    </script>
+</body>
+</html>
